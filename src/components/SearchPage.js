@@ -3,59 +3,42 @@
  */
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
-import * as BooksAPI from '../BooksAPI'
-import BookSearch from './BookSearch'
+// import * as BooksAPI from '../BooksAPI'
+import BookDetails from './BookDetails'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 class SearchPage extends Component {
 
 
+   state = {
+       query: '',
 
-    state = {
-        booksDefaults:[],
-        books:[],
-        query:''
-    }
-    // componentDidMount() {
-    //     BooksAPI.getAll().then((books) => {
-    //         this.setState({booksDefaults:books})
-    //     })
-    // }
+   };
+
 
     updateQuery = (query) => {
         this.setState({query: query.trim()})
-    }
-    searchBook = (query) => {
-        BooksAPI.search(query).then((books) => this.setState({books}))
-    }
+    };
+
 
 
     render() {
+        const {update,booksList} = this.props;
+        const {query} = this.state;
+        // this.setState({books:BookList});
+        // console.log('in side search',booksList);
 
-        const {query,books,booksDefaults} = this.state;
-        console.log('in side search',books);
-        this.setState({booksDefaults:this.props.booksList})
-        let showingBooks
+        let showingBooks;
         if(query) {
-            this.searchBook(query);
-            showingBooks = books
+            const match = new RegExp(escapeRegExp(query), 'i')
+            showingBooks = booksList.filter((book) => match.test(book.title))
         }
         else {
-            showingBooks = booksDefaults
+            showingBooks=[]
         }
+        console.log('show',showingBooks);
 
-        // if (query) {
-        //
-        //     const match = new RegExp(escapeRegExp(query),'i')
-        //     showingBooks = books.filter((book) => match.test(book.title))
-        //     test = this.searchBook(query)
-        //
-        //     console.log('test search',test)
-        //   }
-        //  else {
-        //     showingBooks = books
-        // }
-        showingBooks.sort(sortBy('authors'))
+        showingBooks.sort(sortBy('authors'));
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -75,8 +58,9 @@ class SearchPage extends Component {
                     <ol className="books-grid">
                                 {showingBooks.map((book)=>(
                                     <li key={book.id}>
-                                        <BookSearch
-                                            bookDetails={book}/>
+                                        <BookDetails
+                                            bookDetails={book}
+                                            updateBook={update}/>
                                     </li>
 
                                 ))}
