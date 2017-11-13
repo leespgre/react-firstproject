@@ -8,6 +8,8 @@ class BookDetails extends Component {
     super(props);
     this.state = {value: props.bookDetails.shelf,
                   test:''};
+    // This binding is necessary to make `this` work in the callback
+    this.handleChange = this.handleChange.bind(this)
 
 }
 
