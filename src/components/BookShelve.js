@@ -1,79 +1,49 @@
 /**
  * Created by sanolab on 2017/11/02.
  */
-import React, {Component} from 'react'
+import React from 'react'
 import {Link} from 'react-router-dom'
-import BookDetails from './BookDetails'
+import ShelfDetails from './ShelfDetails'
 // import * as BooksAPI from '../BooksAPI'
 
-class BookShelve extends Component {
+const BookShelve = (props) => {
 
 
-    render() {
-        const {booksList,update} = this.props;
-        // console.log('bookList',booksList);
+    let shelfArray = [ {shelfName : 'currentlyReading',
+                        shelfTitle: 'Currently Reading'
+                        },
+                        {shelfName : 'wantToRead',
+                            shelfTitle: 'Want To Read'
+                        },
+                        {shelfName : 'read',
+                            shelfTitle: 'Read'
+                        },
+                        ]
 
-        return (
-            <div className="list-books">
-                <div className="list-books-title">
-                    <h1>MyReads</h1>
-                </div>
-                <div className="list-books-content">
-                    <div>
-                        <div className="bookshelf">
-                            <h2 className="bookshelf-title">Currently Reading</h2>
-                            <div className="bookshelf-books">
-                                <ol className="books-grid">
-                                    {booksList.filter((book)=>(book.shelf==='currentlyReading')).map(book =>(
-                                        <li key={book.id}>
-                                            <BookDetails
-                                                bookDetails={book}
-                                                updateBook={update}/>
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
-                        </div>
-                        <div className="bookshelf">
-                            <h2 className="bookshelf-title">Want To Read</h2>
-                            <div className="bookshelf-books">
-                                <ol className="books-grid">
-                                    {booksList.filter((book)=>(book.shelf==='wantToRead')).map(book =>(
-                                        <li key={book.id}>
-                                            <BookDetails
-                                                bookDetails={book}
-                                                updateBook={update}/>
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
-                        </div>
-                        <div className="bookshelf">
-                            <h2 className="bookshelf-title">Read</h2>
-                            <div className="bookshelf-books">
-                                <ol className="books-grid">
-                                    {booksList.filter((book)=>(book.shelf==='read')).map(book =>(
-                                        <li key={book.id}>
-                                            <BookDetails
-                                                bookDetails={book}
-                                                updateBook={update}/>
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                </div>
-                <div className="open-search">
-                    <Link to="/search"/>
-                </div>
+    return (
+        <div className="list-books">
+            <div className="list-books-title">
+                <h1>MyReads</h1>
             </div>
+            <ol className="list-books-content">
+                {shelfArray.map((shelf) => (
+                    <li key={shelf.shelfName}>
+                        <ShelfDetails booksList={props.booksList}
+                                      update={props.update}
+                                      shelfName={shelf.shelfName}
+                                      shelfTitle={shelf.shelfTitle}/>
+                    </li>
 
-        )
-    }
+                ))}
+            </ol>
+            <div className="open-search">
+                <Link to="/search"/>
+            </div>
+        </div>
+    )
+
+
 }
+
 
 export default BookShelve;

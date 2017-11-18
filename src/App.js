@@ -1,52 +1,53 @@
 import React from 'react'
 import './App.css'
-import {Route} from 'react-router-dom'
+import {Switch,Route} from 'react-router-dom'
 import SearchPage from './components/SearchPage'
 import BookShelve from './components/BookShelve'
 import * as BooksAPI from './BooksAPI'
 class BooksApp extends React.Component {
 
-  state = {
+    constructor(props) {
+        super(props);
+        this.state = {
+            books : []
+        }
 
-      books:[],
 
-  };
+    }
 
   componentDidMount() {
-      BooksAPI.getAll().then((books) => {
-          this.setState({books:books})
+      BooksAPI.getAll().then((bookServer) => {
+          this.setState({books:bookServer})
       })
   }
   updateShelf = (book,shelf) => {
-      // this.setState((state) =>{books: state.books.filter((item) => item.id!==book.id)})
       BooksAPI.update(book,shelf).then(
-          book.shelf=shelf
-
+              book.shelf=shelf
       )
-      // this.setState((state) => {books: state.books.concat([book])})
-      // console.log('call update',book.shelf)
+      
 }
 
 
-  render() {
-      // console.log('books',this.state.books)
 
+  render() {
 
     return (
       <div className="app">
-        <Route path="/search" render={() =>(
-            <SearchPage booksList={this.state.books}
-                        update={(book,newShelf) => {
-                            this.updateShelf(book,newShelf)
-                        }}
-            />)}/>
-        <Route exact path="/" render={({history}) =>(
-            <BookShelve booksList={this.state.books}
-                        update={(book,newShelf) => {
-                            this.updateShelf(book,newShelf)
-                            history.push("/")
-                        }}
-                        />)}/>
+          <Switch>
+            <Route path="/search" render={({history}) =>(
+                <SearchPage  booksList={this.state.books}
+                             update={(book,newShelf) => {
+                                this.updateShelf(book,newShelf)
+                                history.push("/search")}}
+                />)}/>
+            <Route exact path="/" render={({history}) =>(
+                <BookShelve booksList={this.state.books}
+                            update={(book,newShelf) => {
+                                this.updateShelf(book,newShelf)
+                                history.push("/")
+                            }}
+                            />)}/>
+          </Switch>
       </div>
     )
   }

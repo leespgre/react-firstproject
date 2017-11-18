@@ -6,9 +6,9 @@ import React, {Component} from 'react'
 class BookDetails extends Component {
     constructor(props) {
     super(props);
-    this.state = {value: props.bookDetails.shelf,
-                  test:''};
-    // This binding is necessary to make `this` work in the callback
+    this.state = {value: ''};
+
+
     this.handleChange = this.handleChange.bind(this)
 
 }
@@ -16,27 +16,28 @@ class BookDetails extends Component {
 
 handleChange(event) {
     this.setState({value: event.target.value});
-    // console.log('value in handleChange',this.state.value)
-
+    this.props.updateBook(this.props.bookDetails,event.target.value)
 }
-
-
-
 
     render() {
         const {bookDetails}=this.props;
+        const {value} = this.state
+        let selectedShelf;
+        selectedShelf = bookDetails.shelf
+        if(value) {
+            selectedShelf =value
+
+        }
 
         return (
             <div className="book">
                 <div className="book-top">
-                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${bookDetails.imageLinks.smallThumbnail})` }}></div>
+                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${ bookDetails.imageLinks ? bookDetails.imageLinks.smallThumbnail : 'http://via.placeholder.com/128x193?text=No%20Cover'})` }}></div>
                     <div className="book-shelf-changer">
-                        <select value={this.state.value} onChange={(event) => {
-                            this.handleChange(event)
-                            this.props.updateBook(this.props.bookDetails,event.target.value)
-                        }
+                        <select value={selectedShelf} onChange={
+                         this.handleChange
                         }>
-                            <option value="none" disabled>Move to...</option>
+                            <option value="none">Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
                             <option value="read">Read</option>
@@ -48,7 +49,7 @@ handleChange(event) {
                     </div>
                 </div>
                 <div className="book-title">{bookDetails.title}</div>
-                <div className="book-authors">{bookDetails.authors}</div>
+                <div className="book-authors">{bookDetails.authors ? bookDetails.authors.join(', ') : ''}</div>
             </div>
         )
     }

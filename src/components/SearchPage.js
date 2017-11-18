@@ -3,42 +3,48 @@
  */
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
-// import * as BooksAPI from '../BooksAPI'
+import * as BooksAPI from '../BooksAPI'
 import BookDetails from './BookDetails'
 import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
+
 class SearchPage extends Component {
 
 
-   state = {
-       query: '',
+    constructor(props) {
+        super(props);
+        this.state = {
+            query: '',
+            booksSearch : []
+        };
+    this.updateQuery = this.updateQuery.bind(this)
+    }
 
-   };
+    updateQuery(event){
+        this.setState({query: event.target.value})
+        BooksAPI.search(event.target.value).then( (books) => {
+            this.setState({booksSearch:books})
+            }
 
-
-    updateQuery = (query) => {
-        this.setState({query: query.trim()})
+        )
     };
 
 
 
     render() {
-        const {update,booksList} = this.props;
-        const {query} = this.state;
-        // this.setState({books:BookList});
-        // console.log('in side search',booksList);
+        const {booksList,update} = this.props;
+        const {query,booksSearch} = this.state;
 
-        let showingBooks;
+
+        let showingBooks = [];
         if(query) {
-            const match = new RegExp(escapeRegExp(query), 'i')
-            showingBooks = booksList.filter((book) => match.test(book.title))
+            const match=new RegExp(escapeRegExp(query),'i')
+            showingBooks=booksList.filter((book) => match.test(book.title))
+            showingBooks=showingBooks.concat(booksSearch)
         }
         else {
             showingBooks=[]
         }
-        console.log('show',showingBooks);
 
-        showingBooks.sort(sortBy('authors'));
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -48,11 +54,10 @@ class SearchPage extends Component {
                         <input type="text"
                                placeholder="Search by title or author"
                                value={this.state.query}
-                               onChange={(event) => this.updateQuery(event.target.value)}
+                               onChange={this.updateQuery}
                         />
                     </div>
                 </div>
-
 
                 <div className="search-books-results">
                     <ol className="books-grid">
