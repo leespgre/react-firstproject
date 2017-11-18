@@ -4,7 +4,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import ShelfDetails from './ShelfDetails'
-// import * as BooksAPI from '../BooksAPI'
+
 
 const BookShelve = (props) => {
 
